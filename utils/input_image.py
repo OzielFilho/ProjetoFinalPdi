@@ -8,6 +8,10 @@ class InputImage:
     def imageGet(self):
         image = cv2.imread(self.location)
         return image
+        
+    def showImage(self,imageShow):
+        return cv2.imshow('Image',imageShow)
 
-    def showImage(self,image):
-         cv2.imshow('HSV Image',image)
+    def writeImage(self,destiny:str,imageWrite):
+         cv2.imwrite(destiny,imageWrite)
+     
