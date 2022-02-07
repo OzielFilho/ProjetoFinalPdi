@@ -17,20 +17,17 @@ In order to run this project, you'll need:
 * Latest version of opencv-python library
 
 ### How to install
-#### In GNU/Linux
-  If you are using GNU/Linux, you probably already have Python3 installed in your system by default.
-  
-  To install the required libraries, run the following command:
-  
-  ```
-  pip install -r requirements.txt
-  ```
+First, install [Git](https://git-scm.com/downloads) and clone the project:
 
-#### In Windows
-  To install Python3, please visit [Python official website](https://www.python.org/downloads/), download and install the latest package available.
+`git clone https://github.com/OzielFilho/ProjetoFinalPdi.git`
 
-  To install the required libraries, run the following command:
-  
-  ```
-  pip install -r requirements.txt
-  ```
+#### Python in GNU/Linux
+If you are using GNU/Linux, you probably already have Python3 installed in your system by default.
+
+#### Python in Windows
+To install Python3, please visit [Python official website](https://www.python.org/downloads/), download and install the latest package available.
+
+#### Installing the required libraries
+To install the required libraries, run the following command:
+
+`pip install -r requirements.txt`
