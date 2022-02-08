@@ -1,5 +1,7 @@
 import sys
 
+import cv2
+
 from src.domain.entities.image import Image
 from src.domain.errors.failure import Failure
 from src.domain.errors.image_failure import ImageFailure
@@ -37,6 +39,14 @@ def error_checker(result):
         return result
 
 
+def display_image(window_title: str, image: Image, auto_close: bool = False):
+    cv2.imshow(window_title, image.matrix)
+
+    if auto_close:
+        cv2.waitKey(0)
+        cv2.destroyWindow(str)
+
+
 def load_image_from_path(image_path: str) -> Image:
     load_image = LoadImage(image_repository)
     parameters = LoadImageParameters(image_path)
@@ -55,7 +65,12 @@ def image_normalization(image: Image) -> Image:
 
 def pre_processing():
     image = load_image_from_path("../assets/image.jpg")
+    display_image("Original image", image)
     normalized_image = image_normalization(image)
+    display_image("Normalized image", normalized_image)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def main():
