@@ -10,13 +10,18 @@ from domain.errors.invalid_image_to_denoise_failure import InvalidImageToDenoise
 from domain.errors.invalid_image_to_normalize_failure import InvalidImageToNormalizeFailure
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
+from domain.errors.unable_to_equalization_image_failure import \
+    UnableToEqualizationImageFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
+from domain.parameters.equalization_image_parameters import \
+    EqualizationImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
+from domain.usecases.equalization_image import EqualizationImage
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
@@ -41,6 +46,8 @@ def error_checker(result):
             print("The specified image to denoise is invalid")
         if isinstance(result, UnableToDenoiseImageUsingNonLocalMeansFailure):
             print("Can't denoise image using non local means method")
+        if isinstance(result, UnableToEqualizationImageFailure):
+            print("Can't equalization image")
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
@@ -80,14 +87,26 @@ def image_denoising(image: Image) -> Image:
 
     return error_checker(result)
 
+def image_equalization(image:Image) -> Image:
+    equalization_image = EqualizationImage(image_repository)
+    parameters = EqualizationImageParameters(image)
+    result = equalization_image(parameters)
+
+    return error_checker(result)
+
 
 def pre_processing():
     image = load_image_from_path("assets/wom1.png")
     display_image("Original image", image)
+
     normalized_image = image_normalization(image)
     display_image("Normalized image", normalized_image)
+
     denoised_image = image_denoising(normalized_image)
     display_image("Denoised image", denoised_image)
+
+    equalization = image_equalization(denoised_image)
+    display_image("Equalization image", equalization)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()

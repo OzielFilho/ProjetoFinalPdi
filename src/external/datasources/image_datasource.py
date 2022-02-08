@@ -4,11 +4,15 @@ import numpy as np
 from domain.entities.image import Image
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
+from domain.parameters.equalization_image_parameters import \
+    EqualizationImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
+from infrastructure.errors.unable_to_equalization_exception import \
+    UnableToEqualizationImageException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
 from infrastructure.errors.unable_to_normalize_image_exception import UnableToNormalizeImageException
 from infrastructure.models.image_mapper import ImageMapper
@@ -40,3 +44,12 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return ImageMapper.from_array(data=data)
         else:
             raise UnableToDenoiseImageUsingNonLocalMeansException()
+
+    def equalization_image(self, parameters: EqualizationImageParameters) -> Image:
+        equalization = cv2.equalizeHist(parameters.image.matrix)
+        data = np.hstack((parameters.image.matrix, equalization))
+        
+        if data is not None:
+            return ImageMapper.from_array(data=data)
+        else:
+            raise UnableToEqualizationImageException()

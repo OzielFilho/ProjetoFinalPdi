@@ -7,7 +7,7 @@ from domain.parameters.denoise_image_using_non_local_means_parameters import \
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
-
+from domain.parameters.equalization_image_parameters import EqualizationImageParameters
 
 class ImageRepositoryAbstraction(ABC):
     @abstractmethod
@@ -27,4 +27,8 @@ class ImageRepositoryAbstraction(ABC):
             self,
             parameters: DenoiseImageUsingNonLocalMeansParameters
     ) -> Failure | Image:
+        pass
+
+    @abstractmethod
+    def equalization_image(self,parameters:EqualizationImageParameters) -> Failure | Image:
         pass
