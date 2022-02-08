@@ -1,5 +1,5 @@
 from src.infrastructure.errors.image_exception import ImageException
 
 
-class InvalidImageException(ImageException):
+class UnableToLoadImageException(ImageException):
     pass

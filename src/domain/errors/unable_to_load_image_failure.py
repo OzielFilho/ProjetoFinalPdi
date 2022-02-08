@@ -1,5 +1,5 @@
 from src.domain.errors.image_failure import ImageFailure
 
 
-class InvalidImageFailure(ImageFailure):
+class UnableToLoadImageFailure(ImageFailure):
     pass
