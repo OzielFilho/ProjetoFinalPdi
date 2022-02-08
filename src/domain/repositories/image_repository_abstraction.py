@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-import numpy
 
 from src.domain.entities.image import Image
 from src.domain.errors.failure import Failure
 from src.domain.parameters.load_image_parameters import LoadImageParameters
+from src.domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from src.infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 
 
@@ -17,7 +17,6 @@ class ImageRepositoryAbstraction(ABC):
         pass
 
     @abstractmethod
-    def show_image(self, matrix: numpy.ndarray) -> Failure | None:
+    def normalize_image(self, parameters: NormalizeImageParameters) -> Failure | Image:
         pass
-
 
