@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 from domain.parameters.denoise_image_using_non_local_means_parameters import DenoiseImageUsingNonLocalMeansParameters
 
-from src.domain.entities.image import Image
-from src.domain.parameters.load_image_parameters import LoadImageParameters
-from src.domain.parameters.normalize_image_parameters import NormalizeImageParameters
+from domain.entities.image import Image
+from domain.parameters.load_image_parameters import LoadImageParameters
+from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 
 
 class ImageDataSourceAbstraction(ABC):

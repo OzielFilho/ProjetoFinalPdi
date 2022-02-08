@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
-from src.domain.entities.image import Image
-from src.domain.errors.failure import Failure
-from src.domain.errors.image_failure import ImageFailure
-from src.domain.errors.invalid_image_to_denoise_failure import InvalidImageToDenoiseFailure
-from src.domain.parameters.denoise_image_using_non_local_means_parameters import \
+from domain.entities.image import Image
+from domain.errors.failure import Failure
+from domain.errors.image_failure import ImageFailure
+from domain.errors.invalid_image_to_denoise_failure import InvalidImageToDenoiseFailure
+from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
-from src.domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
+from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 
 
 class DenoiseImageUsingNonLocalMeansAbstraction(ABC):

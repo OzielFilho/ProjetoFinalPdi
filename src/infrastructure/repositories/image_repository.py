@@ -1,19 +1,19 @@
-from src.domain.entities.image import Image
-from src.domain.errors.failure import Failure
-from src.domain.errors.image_failure import ImageFailure
-from src.domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
+from domain.entities.image import Image
+from domain.errors.failure import Failure
+from domain.errors.image_failure import ImageFailure
+from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
-from src.domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
-from src.domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
-from src.domain.parameters.denoise_image_using_non_local_means_parameters import \
+from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
+from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
+from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
-from src.domain.parameters.load_image_parameters import LoadImageParameters
-from src.domain.parameters.normalize_image_parameters import NormalizeImageParameters
-from src.domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
-from src.infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
-from src.infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
+from domain.parameters.load_image_parameters import LoadImageParameters
+from domain.parameters.normalize_image_parameters import NormalizeImageParameters
+from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
+from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
+from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
-from src.infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
+from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
 
 
 class ImageRepository(ImageRepositoryAbstraction):

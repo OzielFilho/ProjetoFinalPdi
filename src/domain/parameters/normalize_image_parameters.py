@@ -1,4 +1,4 @@
-from src.domain.entities.image import Image
+from domain.entities.image import Image
 
 
 class NormalizeImageParameters:

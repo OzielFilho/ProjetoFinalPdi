@@ -1,4 +1,4 @@
-from src.domain.errors.failure import Failure
+from domain.errors.failure import Failure
 
 
 class ImageFailure(Failure):

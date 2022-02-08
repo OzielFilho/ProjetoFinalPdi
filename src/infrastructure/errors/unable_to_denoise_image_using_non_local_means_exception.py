@@ -1,4 +1,4 @@
-from src.infrastructure.errors.image_exception import ImageException
+from infrastructure.errors.image_exception import ImageException
 
 
 class UnableToDenoiseImageUsingNonLocalMeansException(ImageException):
