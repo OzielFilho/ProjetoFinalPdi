@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 from src.infrastructure.datasources.normalization_datasource_abstraction import NormalizationDataSourceAbstraction
 from src.domain.entities.image import Image
@@ -8,7 +9,9 @@ from src.infrastructure.errors.invalid_image_exception import InvalidImageExcept
 
 class NormalizationDataSource(NormalizationDataSourceAbstraction):
     def normalization_image(self, parameters: LoadImageParameters) -> Image:
-        data = cv2.imread(parameters.image_path)
+        img = cv2.imread(parameters.image_path)
+        matrix = np.zeros((800, 800))
+        data = cv2.normalize(img,  matrix, 0, 255, cv2.NORM_MINMAX)
 
         if data is not None:
             return ImageMapper.from_array(data=data)

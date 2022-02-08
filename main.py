@@ -1,3 +1,5 @@
+import cv2
+
 from src.domain.parameters.load_image_parameters import LoadImageParameters
 from src.domain.usecases.normalization_image import NormalizationImage
 from src.external.datasources.normalization_datasource import NormalizationDataSource
@@ -8,4 +10,7 @@ datasource = NormalizationDataSource()
 repository = NormalizationRepository(datasource)
 usecase = NormalizationImage(repository=repository)
 image = usecase(parameters=parameters)
+
+
+
 print(image.matrix)
