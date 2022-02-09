@@ -55,7 +55,7 @@ class ImageRepository(ImageRepositoryAbstraction):
     def equalization_image(self,parameters:EqualizationImageParameters) -> Failure | Image:
         try:
             return self.datasource.equalization_image(parameters)
-        except UnableToEqualizationImageException():
+        except UnableToEqualizationImageException:
             return UnableToEqualizationImageFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))

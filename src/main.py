@@ -87,7 +87,8 @@ def image_denoising(image: Image) -> Image:
 
     return error_checker(result)
 
-def image_equalization(image:Image) -> Image:
+
+def image_equalization(image: Image) -> Image:
     equalization_image = EqualizationImage(image_repository)
     parameters = EqualizationImageParameters(image)
     result = equalization_image(parameters)

@@ -20,7 +20,8 @@ from infrastructure.models.image_mapper import ImageMapper
 
 class ImageDataSource(ImageDataSourceAbstraction):
     def load_image(self, parameters: LoadImageParameters) -> Image:
-        data = cv2.imread(parameters.image_path)
+        # Zero makes the image grayscale
+        data = cv2.imread(parameters.image_path, 0)
 
         if data is not None:
             return ImageMapper.from_array(data=data)
@@ -46,9 +47,8 @@ class ImageDataSource(ImageDataSourceAbstraction):
             raise UnableToDenoiseImageUsingNonLocalMeansException()
 
     def equalization_image(self, parameters: EqualizationImageParameters) -> Image:
-        equalization = cv2.equalizeHist(parameters.image.matrix)
-        data = np.hstack((parameters.image.matrix, equalization))
-        
+        data = cv2.equalizeHist(parameters.image.matrix)
+
         if data is not None:
             return ImageMapper.from_array(data=data)
         else:
