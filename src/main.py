@@ -22,10 +22,13 @@ from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
 from domain.usecases.equalization_image import EqualizationImage
+from domain.usecases.image_to_bgr import ImageToBgr
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
 from infrastructure.repositories.image_repository import ImageRepository
+from domain.errors.unable_to_bgr_image_failure import UnableToBgrImageFailure
+from domain.parameters.bgr_image_parameters import BgrImageParameters
 
 # Core dependencies
 image_datasource = ImageDataSource()
@@ -48,6 +51,8 @@ def error_checker(result):
             print("Can't denoise image using non local means method")
         if isinstance(result, UnableToEqualizationImageFailure):
             print("Can't equalization image")
+        if isinstance(result, UnableToBgrImageFailure):
+            print("Can't to bgr")
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
@@ -95,6 +100,13 @@ def image_equalization(image: Image) -> Image:
 
     return error_checker(result)
 
+def image_to_bgr(image : Image) -> Image:
+    image_to_bgr = ImageToBgr(image_repository) 
+    parameters = BgrImageParameters(image)
+    result = image_to_bgr(parameters)
+
+    return error_checker(result)
+
 
 def pre_processing():
     image = load_image_from_path("assets/wom1.png")
@@ -108,13 +120,23 @@ def pre_processing():
 
     equalization = image_equalization(denoised_image)
     display_image("Equalization image", equalization)
-
+    
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+    return equalization
+
+
+def transformations_color():
+    image = image_to_bgr(pre_processing())
+    display_image("Image to Bgr", image)
+
+    cv2.waitKey(0)
+    cv2.destroyAllWindows() 
 
 def main():
-    pre_processing()
+    transformations_color()
+
 
 
 if __name__ == "__main__":

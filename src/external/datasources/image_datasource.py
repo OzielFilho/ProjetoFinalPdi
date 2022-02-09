@@ -8,7 +8,9 @@ from domain.parameters.equalization_image_parameters import \
     EqualizationImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
+from domain.parameters.bgr_image_parameters import BgrImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
+from infrastructure.errors.unable_to_bgr_image_exception import UnableToBgrImageException
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
 from infrastructure.errors.unable_to_equalization_exception import \
@@ -53,3 +55,11 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return ImageMapper.from_array(data=data)
         else:
             raise UnableToEqualizationImageException()
+    
+    def image_to_bgr(self,parameters:BgrImageParameters) -> Image:
+        data = cv2.cvtColor(parameters.image.matrix,cv2.COLOR_RGB2BGR)
+
+        if data is not None:
+            return ImageMapper.from_array(data=data)
+        else:
+            raise UnableToBgrImageException() 

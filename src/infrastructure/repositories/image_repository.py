@@ -7,11 +7,13 @@ from domain.errors.unable_to_equalization_image_failure import \
     UnableToEqualizationImageFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
+from domain.errors.unable_to_bgr_image_failure import UnableToBgrImageFailure
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from domain.parameters.equalization_image_parameters import EqualizationImageParameters
+from domain.parameters.bgr_image_parameters import BgrImageParameters
 from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
@@ -19,6 +21,7 @@ from infrastructure.errors.unable_to_denoise_image_using_non_local_means_excepti
 from infrastructure.errors.unable_to_equalization_exception import \
     UnableToEqualizationImageException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
+from infrastructure.errors.unable_to_bgr_image_exception import UnableToBgrImageException
 
 
 class ImageRepository(ImageRepositoryAbstraction):
@@ -52,10 +55,18 @@ class ImageRepository(ImageRepositoryAbstraction):
         except BaseException as exception:
             return ImageFailure(message=str(exception))
 
-    def equalization_image(self,parameters:EqualizationImageParameters) -> Failure | Image:
+    def equalization_image(self, parameters: EqualizationImageParameters) -> Failure | Image:
         try:
             return self.datasource.equalization_image(parameters)
         except UnableToEqualizationImageException:
             return UnableToEqualizationImageFailure()
+        except BaseException as exception:
+            return ImageFailure(message=str(exception))
+
+    def image_to_bgr(self, parameters: BgrImageParameters) -> Failure | Image:
+        try:
+            return self.datasource.bgr_image(parameters)
+        except UnableToBgrImageException:
+            return UnableToBgrImageFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))

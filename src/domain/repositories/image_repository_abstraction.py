@@ -8,7 +8,7 @@ from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 from domain.parameters.equalization_image_parameters import EqualizationImageParameters
-
+from domain.parameters.bgr_image_parameters import BgrImageParameters
 class ImageRepositoryAbstraction(ABC):
     @abstractmethod
     def __init__(self, datasource: ImageDataSourceAbstraction) -> None:
@@ -32,3 +32,9 @@ class ImageRepositoryAbstraction(ABC):
     @abstractmethod
     def equalization_image(self,parameters:EqualizationImageParameters) -> Failure | Image:
         pass
+
+    @abstractmethod
+    def bgr_image(self,parameters:BgrImageParameters) -> Failure | Image:
+        pass
+
+
