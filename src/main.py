@@ -109,7 +109,7 @@ def image_to_bgr(image : Image) -> Image:
 
 
 def pre_processing():
-    image = load_image_from_path("assets/wom1.png")
+    image = load_image_from_path("assets/Im256.jpg")
     display_image("Original image", image)
 
     normalized_image = image_normalization(image)
