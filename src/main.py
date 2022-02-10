@@ -100,15 +100,16 @@ def image_equalization(image: Image) -> Image:
 
     return error_checker(result)
 
-def image_to_bgr(image : Image) -> Image:
-    image_to_bgr = ImageToBgr(image_repository) 
+
+def image_to_bgr(image: Image) -> Image:
+    image_to_bgr = ImageToBgr(image_repository)
     parameters = BgrImageParameters(image)
     result = image_to_bgr(parameters)
 
     return error_checker(result)
 
 
-def pre_processing():
+def pre_processing() -> Image:
     image = load_image_from_path("assets/Im256.jpg")
     display_image("Original image", image)
 
@@ -118,25 +119,23 @@ def pre_processing():
     denoised_image = image_denoising(normalized_image)
     display_image("Denoised image", denoised_image)
 
-    equalization = image_equalization(denoised_image)
-    display_image("Equalization image", equalization)
-    
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    equalized_image = image_equalization(denoised_image)
+    display_image("Equalization image", equalized_image)
 
-    return equalization
+    return equalized_image
 
 
-def transformations_color():
-    image = image_to_bgr(pre_processing())
-    display_image("Image to Bgr", image)
+def color_space_conversion(image: Image) -> Image:
+    image_in_bgr_color_space = image_to_bgr(image)
+    display_image("Image to Bgr", image_in_bgr_color_space)
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows() 
 
 def main():
-    transformations_color()
+    processed_image = pre_processing()
+    color_space_conversion(processed_image)
 
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":

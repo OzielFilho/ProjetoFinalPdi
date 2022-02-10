@@ -19,11 +19,9 @@ class ImageToBgrAbstraction(ABC):
 
 
 class ImageToBgr(ImageToBgrAbstraction):
-    @abstractmethod
     def __init__(self, repository: ImageRepositoryAbstraction) -> None:
         self.repository = repository
 
-    @abstractmethod
     def __call__(self, parameters: BgrImageParameters) -> Failure | Image:
         try:
             if parameters is None or not isinstance(parameters.image, Image):

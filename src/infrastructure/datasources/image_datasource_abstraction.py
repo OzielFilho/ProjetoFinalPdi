@@ -6,6 +6,8 @@ from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from domain.parameters.equalization_image_parameters import EqualizationImageParameters
 from domain.parameters.bgr_image_parameters import BgrImageParameters
+
+
 class ImageDataSourceAbstraction(ABC):
     @abstractmethod
     def load_image(self, parameters: LoadImageParameters) -> Image:
@@ -22,8 +24,7 @@ class ImageDataSourceAbstraction(ABC):
     @abstractmethod
     def equalization_image(self, parameters: EqualizationImageParameters) -> Image:
         pass
-    
-    @abstractmethod
-    def bgr_image(self, parameters:BgrImageParameters) -> Image:
-        pass
 
+    @abstractmethod
+    def bgr_image(self, parameters: BgrImageParameters) -> Image:
+        pass

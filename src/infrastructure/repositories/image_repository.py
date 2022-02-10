@@ -63,7 +63,7 @@ class ImageRepository(ImageRepositoryAbstraction):
         except BaseException as exception:
             return ImageFailure(message=str(exception))
 
-    def image_to_bgr(self, parameters: BgrImageParameters) -> Failure | Image:
+    def bgr_image(self, parameters: BgrImageParameters) -> Failure | Image:
         try:
             return self.datasource.bgr_image(parameters)
         except UnableToBgrImageException:

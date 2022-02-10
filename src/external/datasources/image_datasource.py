@@ -22,7 +22,6 @@ from infrastructure.models.image_mapper import ImageMapper
 
 class ImageDataSource(ImageDataSourceAbstraction):
     def load_image(self, parameters: LoadImageParameters) -> Image:
-        # Zero makes the image grayscale
         data = cv2.imread(parameters.image_path)
 
         if data is not None:
@@ -61,11 +60,11 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return ImageMapper.from_array(data=data)
         else:
             raise UnableToEqualizationImageException()
-    
-    def image_to_bgr(self,parameters:BgrImageParameters) -> Image:
-        data = cv2.cvtColor(parameters.image.matrix,cv2.COLOR_RGB2BGR)
+
+    def bgr_image(self, parameters: BgrImageParameters) -> Image:
+        data = cv2.cvtColor(parameters.image.matrix, cv2.COLOR_RGB2BGR)
 
         if data is not None:
             return ImageMapper.from_array(data=data)
         else:
-            raise UnableToBgrImageException() 
+            raise UnableToBgrImageException()
