@@ -16,6 +16,7 @@ from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import Una
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
 from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
+from domain.errors.unable_to_get_all_normal_images_paths_failure import UnableToGetAllNormalImagesPathsFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
 from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
@@ -29,6 +30,7 @@ from domain.usecases.convert_image_to_bgr_color_space import ConvertImageToBgrCo
 from domain.usecases.convert_image_to_grayscale import ConvertImageToGrayScale
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
 from domain.usecases.equalize_image import EqualizeImage
+from domain.usecases.get_all_normal_images_paths import GetAllNormalImagesPaths
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
@@ -43,6 +45,8 @@ image_repository = ImageRepository(image_datasource)
 
 def error_checker(result):
     if isinstance(result, Failure):
+        if isinstance(result, UnableToGetAllNormalImagesPathsFailure):
+            print("Can't get normal images")
         if isinstance(result, InvalidImagePathFailure):
             print("The specified image path is invalid")
         if isinstance(result, UnableToLoadImageFailure):
@@ -70,6 +74,8 @@ def error_checker(result):
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
+        print('Aborting...')
+
         sys.exit()
     else:
         return result
@@ -81,6 +87,24 @@ def display_image(window_title: str, image: Image, auto_close: bool = False):
     if auto_close:
         cv2.waitKey(0)
         cv2.destroyWindow(str)
+
+
+def get_paths_for_normal_images() -> list[str]:
+    get_normal_images_paths = GetAllNormalImagesPaths(image_repository)
+    result = get_normal_images_paths()
+
+    return error_checker(result)
+
+
+def get_normal_images() -> list[Image]:
+    normal_images: list[Image] = []
+    normal_images_paths = get_paths_for_normal_images()
+
+    for image_path in normal_images_paths:
+        image = load_image_from_path(image_path)
+        normal_images.append(image)
+
+    return normal_images
 
 
 def load_image_from_path(image_path: str) -> Image:
@@ -134,26 +158,26 @@ def image_convert_to_grayscale(image: Image) -> Image:
 
 def pre_processing(image_path: str) -> Image:
     image = load_image_from_path(image_path)
-    display_image("Original image", image)
+    # display_image("Original image", image)
 
     normalized_image = image_normalization(image)
-    display_image("Normalized image", normalized_image)
+    # display_image("Normalized image", normalized_image)
 
     denoised_image = image_denoising(normalized_image)
-    display_image("Denoised image", denoised_image)
+    # display_image("Denoised image", denoised_image)
 
     equalized_image = image_equalization(denoised_image)
-    display_image("Equalized image", equalized_image)
+    # display_image("Equalized image", equalized_image)
 
     return equalized_image
 
 
 def color_space_conversion(image: Image) -> Image:
     image_in_bgr_color_space = image_color_space_conversion(image)
-    display_image("Image in BGR color space", image_in_bgr_color_space)
+    # display_image("Image in BGR color space", image_in_bgr_color_space)
 
     image_in_grayscale = image_convert_to_grayscale(image_in_bgr_color_space)
-    display_image("Image in Grayscale", image_in_grayscale)
+    # display_image("Image in Grayscale", image_in_grayscale)
 
 
 def image_processing(image_path: str) -> None:
@@ -165,7 +189,7 @@ def image_processing(image_path: str) -> None:
 
 
 def main():
-    image_processing('../assets/rim_one_db/glaucoma/Im256.jpg')
+    normal_images = get_normal_images()
 
 
 if __name__ == "__main__":

@@ -33,3 +33,7 @@ class ImageDataSourceAbstraction(ABC):
     @abstractmethod
     def convert_image_to_grayscale(self, parameters: ConvertImageToGrayscaleParameters) -> Image:
         pass
+
+    @abstractmethod
+    def get_all_normal_images_paths(self) -> list[str]:
+        pass

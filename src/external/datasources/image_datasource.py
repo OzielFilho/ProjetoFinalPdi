@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import numpy as np
 from domain.entities.image import Image
@@ -16,6 +18,8 @@ from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
 from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
+from infrastructure.errors.unable_to_get_all_normal_images_paths_exception import \
+    UnableToGetAllNormalImagesPathsException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
 from infrastructure.errors.unable_to_normalize_image_exception import UnableToNormalizeImageException
 from infrastructure.mappers.image_mapper import ImageMapper
@@ -77,3 +81,32 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return ImageMapper.from_array(data=data)
         else:
             raise UnableToConvertImageToGrayscaleException()
+
+    def get_paths_from(self, path: str):
+        paths: list[str] = []
+
+        for file in os.listdir(path):
+            paths.append(os.path.join(path, file))
+
+        return paths
+
+    def get_all_normal_images_paths(self) -> list[str]:
+        try:
+            current_path = os.getcwd()
+            os.chdir('..')
+            root_path = os.getcwd()
+
+            normal_images_folder_path = os.path.join(
+                root_path,
+                'assets',
+                'rim_one_db',
+                'normal'
+            )
+
+            paths = self.get_paths_from(normal_images_folder_path)
+
+            os.chdir(current_path)
+
+            return paths
+        except:
+            raise UnableToGetAllNormalImagesPathsException()
