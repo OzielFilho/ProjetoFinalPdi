@@ -3,9 +3,10 @@ from abc import ABC, abstractmethod
 from domain.entities.image import Image
 from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
-from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
-from domain.errors.invalid_image_to_convert_to_bgr_color_space_failure import InvalidImageToConvertToBgrColorSpaceFailure
+from domain.errors.invalid_image_to_convert_to_bgr_color_space_failure import \
+    InvalidImageToConvertToBgrColorSpaceFailure
 from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 
 
 class ConvertImageToBgrColorSpaceAbstraction(ABC):

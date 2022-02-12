@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 from domain.entities.image import Image
 from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
-from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 from domain.errors.invalid_image_to_equalize_failure import InvalidImageToEqualizeFailure
 from domain.parameters.equalize_image_parameters import EqualizeImageParameters
+from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 
 
 class EqualizeImageAbstraction(ABC):

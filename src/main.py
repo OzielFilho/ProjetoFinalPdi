@@ -6,34 +6,35 @@ from domain.entities.image import Image
 from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
 from domain.errors.invalid_image_path_failure import InvalidImagePathFailure
+from domain.errors.invalid_image_to_convert_to_bgr_color_space_failure import \
+    InvalidImageToConvertToBgrColorSpaceFailure
+from domain.errors.invalid_image_to_convert_to_grayscale_failure import InvalidImageToConvertToGrayScaleFailure
 from domain.errors.invalid_image_to_denoise_failure import InvalidImageToDenoiseFailure
+from domain.errors.invalid_image_to_equalize_failure import InvalidImageToEqualizeFailure
 from domain.errors.invalid_image_to_normalize_failure import InvalidImageToNormalizeFailure
+from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import UnableToConvertImageToBgrColorSpaceFailure
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
+from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
+from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
+from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
+from domain.usecases.convert_image_to_bgr_color_space import ConvertImageToBgrColorSpace
+from domain.usecases.convert_image_to_grayscale import ConvertImageToGrayScale
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
 from domain.usecases.equalize_image import EqualizeImage
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
+from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import \
+    UnableToConvertImageToGrayscaleException
 from infrastructure.repositories.image_repository import ImageRepository
-from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
-from domain.usecases.convert_image_to_bgr_color_space import ConvertImageToBgrColorSpace
-from domain.errors.invalid_image_to_convert_to_bgr_color_space_failure import \
-    InvalidImageToConvertToBgrColorSpaceFailure
-from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import UnableToConvertImageToBgrColorSpaceFailure
-from domain.errors.invalid_image_to_equalize_failure import InvalidImageToEqualizeFailure
-from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
-from domain.parameters.equalize_image_parameters import EqualizeImageParameters
-from domain.errors.invalid_image_to_convert_to_grayscale_failure import InvalidImageToConvertToGrayScaleFailure
-from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
-from domain.usecases.convert_image_to_grayscale import ConvertImageToGrayScale
-from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import UnableToConvertImageToGrayscaleException
 
 # Core dependencies
 image_datasource = ImageDataSource()
@@ -122,12 +123,14 @@ def image_color_space_conversion(image: Image) -> Image:
 
     return error_checker(result)
 
+
 def image_convert_to_grayscale(image: Image) -> Image:
     convert_image_to_grayscale = ConvertImageToGrayScale(image_repository)
     parameters = ConvertImageToGrayscaleParameters(image)
-    result =  convert_image_to_grayscale(parameters)
+    result = convert_image_to_grayscale(parameters)
 
     return error_checker(result)
+
 
 def pre_processing(image_path: str) -> Image:
     image = load_image_from_path(image_path)
@@ -140,7 +143,7 @@ def pre_processing(image_path: str) -> Image:
     display_image("Denoised image", denoised_image)
 
     equalized_image = image_equalization(denoised_image)
-    display_image("Equalization image", equalized_image)
+    display_image("Equalized image", equalized_image)
 
     return equalized_image
 
@@ -162,7 +165,7 @@ def image_processing(image_path: str) -> None:
 
 
 def main():
-    image_processing('assets/rim_one_db/glaucoma/Im256.jpg')
+    image_processing('../assets/rim_one_db/glaucoma/Im256.jpg')
 
 
 if __name__ == "__main__":
