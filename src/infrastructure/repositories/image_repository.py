@@ -3,25 +3,24 @@ from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
-from domain.errors.unable_to_equalization_image_failure import \
-    UnableToEqualizationImageFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
-from domain.errors.unable_to_bgr_image_failure import UnableToBgrImageFailure
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
-from domain.parameters.equalization_image_parameters import EqualizationImageParameters
-from domain.parameters.bgr_image_parameters import BgrImageParameters
 from domain.repositories.image_repository_abstraction import ImageRepositoryAbstraction
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
-from infrastructure.errors.unable_to_equalization_exception import \
-    UnableToEqualizationImageException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
-from infrastructure.errors.unable_to_bgr_image_exception import UnableToBgrImageException
+from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import UnableToConvertImageToBgrColorSpaceFailure
+from infrastructure.errors.unable_to_convert_image_to_bgr_color_space_exception import \
+    UnableToConvertImageToBgrColorSpaceException
+from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
+from domain.parameters.equalize_image_parameters import EqualizeImageParameters
+from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
 
 
 class ImageRepository(ImageRepositoryAbstraction):
@@ -55,18 +54,18 @@ class ImageRepository(ImageRepositoryAbstraction):
         except BaseException as exception:
             return ImageFailure(message=str(exception))
 
-    def equalization_image(self, parameters: EqualizationImageParameters) -> Failure | Image:
+    def equalize_image(self, parameters: EqualizeImageParameters) -> Failure | Image:
         try:
-            return self.datasource.equalization_image(parameters)
-        except UnableToEqualizationImageException:
-            return UnableToEqualizationImageFailure()
+            return self.datasource.equalize_image(parameters)
+        except UnableToEqualizeImageException:
+            return UnableToEqualizeImageFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))
 
-    def bgr_image(self, parameters: BgrImageParameters) -> Failure | Image:
+    def convert_image_to_bgr_color_space(self, parameters: ConvertImageToBgrColorSpaceParameters) -> Failure | Image:
         try:
-            return self.datasource.bgr_image(parameters)
-        except UnableToBgrImageException:
-            return UnableToBgrImageFailure()
+            return self.datasource.convert_image_to_bgr_color_space(parameters)
+        except UnableToConvertImageToBgrColorSpaceException:
+            return UnableToConvertImageToBgrColorSpaceFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))

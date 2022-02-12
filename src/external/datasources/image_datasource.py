@@ -4,20 +4,20 @@ import numpy as np
 from domain.entities.image import Image
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
-from domain.parameters.equalization_image_parameters import \
-    EqualizationImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
-from domain.parameters.bgr_image_parameters import BgrImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
-from infrastructure.errors.unable_to_bgr_image_exception import UnableToBgrImageException
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
-from infrastructure.errors.unable_to_equalization_exception import \
-    UnableToEqualizationImageException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
 from infrastructure.errors.unable_to_normalize_image_exception import UnableToNormalizeImageException
-from infrastructure.models.image_mapper import ImageMapper
+from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from infrastructure.errors.unable_to_convert_image_to_bgr_color_space_exception import \
+    UnableToConvertImageToBgrColorSpaceException
+from domain.parameters.equalize_image_parameters import EqualizeImageParameters
+from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import UnableToDenoiseImageUsingNonLocalMeansException
+from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
+from infrastructure.mappers.image_mapper import ImageMapper
 
 
 class ImageDataSource(ImageDataSourceAbstraction):
@@ -47,7 +47,7 @@ class ImageDataSource(ImageDataSourceAbstraction):
         else:
             raise UnableToDenoiseImageUsingNonLocalMeansException()
 
-    def equalization_image(self, parameters: EqualizationImageParameters) -> Image:
+    def equalize_image(self, parameters: EqualizeImageParameters) -> Image:
         red, green, blue = cv2.split(parameters.image.matrix)
 
         equalized_red = cv2.equalizeHist(red)
@@ -59,12 +59,12 @@ class ImageDataSource(ImageDataSourceAbstraction):
         if data is not None:
             return ImageMapper.from_array(data=data)
         else:
-            raise UnableToEqualizationImageException()
+            raise UnableToEqualizeImageException()
 
-    def bgr_image(self, parameters: BgrImageParameters) -> Image:
+    def convert_image_to_bgr_color_space(self, parameters: ConvertImageToBgrColorSpaceParameters) -> Image:
         data = cv2.cvtColor(parameters.image.matrix, cv2.COLOR_RGB2BGR)
 
         if data is not None:
             return ImageMapper.from_array(data=data)
         else:
-            raise UnableToBgrImageException()
+            raise UnableToConvertImageToBgrColorSpaceException()

@@ -1,5 +1,5 @@
 from infrastructure.errors.image_exception import ImageException
 
 
-class UnableToEqualizationImageException(ImageException):
+class UnableToEqualizeImageException(ImageException):
     pass

@@ -7,8 +7,8 @@ from domain.parameters.denoise_image_using_non_local_means_parameters import \
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
-from domain.parameters.equalization_image_parameters import EqualizationImageParameters
-from domain.parameters.bgr_image_parameters import BgrImageParameters
+from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 
 
 class ImageRepositoryAbstraction(ABC):
@@ -32,9 +32,9 @@ class ImageRepositoryAbstraction(ABC):
         pass
 
     @abstractmethod
-    def equalization_image(self, parameters: EqualizationImageParameters) -> Failure | Image:
+    def equalize_image(self, parameters: EqualizeImageParameters) -> Failure | Image:
         pass
 
     @abstractmethod
-    def bgr_image(self, parameters: BgrImageParameters) -> Failure | Image:
+    def convert_image_to_bgr_color_space(self, parameters: ConvertImageToBgrColorSpaceParameters) -> Failure | Image:
         pass

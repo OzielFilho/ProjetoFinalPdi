@@ -1,6 +1,6 @@
 from domain.entities.image import Image
 
 
-class BgrImageParameters:
+class ConvertImageToBgrColorSpaceParameters:
     def __init__(self, image: Image) -> None:
         self.image = image

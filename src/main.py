@@ -10,25 +10,26 @@ from domain.errors.invalid_image_to_denoise_failure import InvalidImageToDenoise
 from domain.errors.invalid_image_to_normalize_failure import InvalidImageToNormalizeFailure
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
-from domain.errors.unable_to_equalization_image_failure import \
-    UnableToEqualizationImageFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
 from domain.parameters.denoise_image_using_non_local_means_parameters import \
     DenoiseImageUsingNonLocalMeansParameters
-from domain.parameters.equalization_image_parameters import \
-    EqualizationImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
-from domain.usecases.equalization_image import EqualizationImage
-from domain.usecases.image_to_bgr import ImageToBgr
+from domain.usecases.equalize_image import EqualizeImage
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
 from infrastructure.repositories.image_repository import ImageRepository
-from domain.errors.unable_to_bgr_image_failure import UnableToBgrImageFailure
-from domain.parameters.bgr_image_parameters import BgrImageParameters
+from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
+from domain.usecases.convert_image_to_bgr_color_space import ConvertImageToBgrColorSpace
+from domain.errors.invalid_image_to_convert_to_bgr_color_space_failure import \
+    InvalidImageToConvertToBgrColorSpaceFailure
+from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import UnableToConvertImageToBgrColorSpaceFailure
+from domain.errors.invalid_image_to_equalize_failure import InvalidImageToEqualizeFailure
+from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
+from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 
 # Core dependencies
 image_datasource = ImageDataSource()
@@ -49,10 +50,14 @@ def error_checker(result):
             print("The specified image to denoise is invalid")
         if isinstance(result, UnableToDenoiseImageUsingNonLocalMeansFailure):
             print("Can't denoise image using non local means method")
-        if isinstance(result, UnableToEqualizationImageFailure):
-            print("Can't equalization image")
-        if isinstance(result, UnableToBgrImageFailure):
-            print("Can't to bgr")
+        if isinstance(result, InvalidImageToEqualizeFailure):
+            print("The specified image to equalize is invalid")
+        if isinstance(result, UnableToEqualizeImageFailure):
+            print("Can't equalize image")
+        if isinstance(result, InvalidImageToConvertToBgrColorSpaceFailure):
+            print("The specified image to convert is invalid")
+        if isinstance(result, UnableToConvertImageToBgrColorSpaceFailure):
+            print("Can't convert image to BGR color space")
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
@@ -94,17 +99,18 @@ def image_denoising(image: Image) -> Image:
 
 
 def image_equalization(image: Image) -> Image:
-    equalization_image = EqualizationImage(image_repository)
-    parameters = EqualizationImageParameters(image)
-    result = equalization_image(parameters)
+    equalize_image = EqualizeImage(image_repository)
+    parameters = EqualizeImageParameters(image)
+    result = equalize_image(parameters)
 
     return error_checker(result)
 
 
-def image_to_bgr(image: Image) -> Image:
-    image_to_bgr = ImageToBgr(image_repository)
-    parameters = BgrImageParameters(image)
-    result = image_to_bgr(parameters)
+def image_color_space_conversion(image: Image) -> Image:
+    convert_image_to_bgr_color_space = ConvertImageToBgrColorSpace(
+        image_repository)
+    parameters = ConvertImageToBgrColorSpaceParameters(image)
+    result = convert_image_to_bgr_color_space(parameters)
 
     return error_checker(result)
 
@@ -126,8 +132,8 @@ def pre_processing() -> Image:
 
 
 def color_space_conversion(image: Image) -> Image:
-    image_in_bgr_color_space = image_to_bgr(image)
-    display_image("Image to Bgr", image_in_bgr_color_space)
+    image_in_bgr_color_space = image_color_space_conversion(image)
+    display_image("Image in BGR color space", image_in_bgr_color_space)
 
 
 def main():

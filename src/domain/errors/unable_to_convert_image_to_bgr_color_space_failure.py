@@ -1,5 +1,5 @@
 from domain.errors.image_failure import ImageFailure
 
 
-class UnableToEqualizationImageFailure(ImageFailure):
+class UnableToConvertImageToBgrColorSpaceFailure(ImageFailure):
     pass
