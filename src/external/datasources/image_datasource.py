@@ -18,6 +18,8 @@ from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import UnableToDenoiseImageUsingNonLocalMeansException
 from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
 from infrastructure.mappers.image_mapper import ImageMapper
+from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
+from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import UnableToConvertImageToGrayscaleException
 
 
 class ImageDataSource(ImageDataSourceAbstraction):
@@ -68,3 +70,11 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return ImageMapper.from_array(data=data)
         else:
             raise UnableToConvertImageToBgrColorSpaceException()
+
+    def convert_image_to_grayscale(self, parameters: ConvertImageToGrayscaleParameters) -> Image:
+        data = cv2.cvtColor(parameters.image.matrix, cv2.COLOR_BGR2GRAY)
+
+        if data is not None:
+            return ImageMapper.from_array(data=data)
+        else:
+            raise UnableToConvertImageToGrayscaleException()

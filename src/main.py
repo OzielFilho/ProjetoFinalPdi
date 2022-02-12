@@ -30,6 +30,10 @@ from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import Una
 from domain.errors.invalid_image_to_equalize_failure import InvalidImageToEqualizeFailure
 from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
 from domain.parameters.equalize_image_parameters import EqualizeImageParameters
+from domain.errors.invalid_image_to_convert_to_grayscale_failure import InvalidImageToConvertToGrayScaleFailure
+from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
+from domain.usecases.convert_image_to_grayscale import ConvertImageToGrayScale
+from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import UnableToConvertImageToGrayscaleException
 
 # Core dependencies
 image_datasource = ImageDataSource()
@@ -58,6 +62,10 @@ def error_checker(result):
             print("The specified image to convert is invalid")
         if isinstance(result, UnableToConvertImageToBgrColorSpaceFailure):
             print("Can't convert image to BGR color space")
+        if isinstance(result, InvalidImageToConvertToGrayScaleFailure):
+            print("The specified image to convert is invalid")
+        if isinstance(result, UnableToConvertImageToGrayscaleException):
+            print("Can't convert image to grayscale")
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
@@ -114,6 +122,12 @@ def image_color_space_conversion(image: Image) -> Image:
 
     return error_checker(result)
 
+def image_convert_to_grayscale(image: Image) -> Image:
+    convert_image_to_grayscale = ConvertImageToGrayScale(image_repository)
+    parameters = ConvertImageToGrayscaleParameters(image)
+    result =  convert_image_to_grayscale(parameters)
+
+    return error_checker(result)
 
 def pre_processing(image_path: str) -> Image:
     image = load_image_from_path(image_path)
@@ -134,6 +148,9 @@ def pre_processing(image_path: str) -> Image:
 def color_space_conversion(image: Image) -> Image:
     image_in_bgr_color_space = image_color_space_conversion(image)
     display_image("Image in BGR color space", image_in_bgr_color_space)
+
+    image_in_grayscale = image_convert_to_grayscale(image_in_bgr_color_space)
+    display_image("Image in Grayscale", image_in_grayscale)
 
 
 def image_processing(image_path: str) -> None:

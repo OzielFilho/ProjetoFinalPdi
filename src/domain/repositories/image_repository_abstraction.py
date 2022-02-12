@@ -9,6 +9,7 @@ from domain.parameters.normalize_image_parameters import NormalizeImageParameter
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
 from domain.parameters.convert_image_to_bgr_color_space_parameters import ConvertImageToBgrColorSpaceParameters
 from domain.parameters.equalize_image_parameters import EqualizeImageParameters
+from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
 
 
 class ImageRepositoryAbstraction(ABC):
@@ -37,4 +38,8 @@ class ImageRepositoryAbstraction(ABC):
 
     @abstractmethod
     def convert_image_to_bgr_color_space(self, parameters: ConvertImageToBgrColorSpaceParameters) -> Failure | Image:
+        pass
+
+    @abstractmethod
+    def convert_image_to_grayscale(self,parameters:ConvertImageToGrayscaleParameters) -> Failure | Image:
         pass

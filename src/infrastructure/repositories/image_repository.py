@@ -21,6 +21,8 @@ from infrastructure.errors.unable_to_convert_image_to_bgr_color_space_exception 
 from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
 from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
+from domain.parameters.convert_image_to_grayscale_parameters import ConvertImageToGrayscaleParameters
+from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import UnableToConvertImageToGrayscaleException
 
 
 class ImageRepository(ImageRepositoryAbstraction):
@@ -69,3 +71,11 @@ class ImageRepository(ImageRepositoryAbstraction):
             return UnableToConvertImageToBgrColorSpaceFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))
+    
+    def convert_image_to_grayscale(self, parameters: ConvertImageToGrayscaleParameters) -> Failure | Image:
+        try:
+            return self.datasource.convert_image_to_grayscale(parameters)
+        except UnableToConvertImageToGrayscaleException:
+            return UnableToConvertImageToBgrColorSpaceFailure()
+        except BaseException as exception:
+            return ImageFailure(message=str(exception))       
