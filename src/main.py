@@ -115,8 +115,8 @@ def image_color_space_conversion(image: Image) -> Image:
     return error_checker(result)
 
 
-def pre_processing() -> Image:
-    image = load_image_from_path("assets/Im256.jpg")
+def pre_processing(image_path: str) -> Image:
+    image = load_image_from_path(image_path)
     display_image("Original image", image)
 
     normalized_image = image_normalization(image)
@@ -136,12 +136,16 @@ def color_space_conversion(image: Image) -> Image:
     display_image("Image in BGR color space", image_in_bgr_color_space)
 
 
-def main():
-    processed_image = pre_processing()
+def image_processing(image_path: str) -> None:
+    processed_image = pre_processing(image_path)
     color_space_conversion(processed_image)
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+def main():
+    image_processing('assets/rim_one_db/glaucoma/Im256.jpg')
 
 
 if __name__ == "__main__":
