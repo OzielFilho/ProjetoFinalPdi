@@ -47,3 +47,7 @@ class ImageRepositoryAbstraction(ABC):
     @abstractmethod
     def get_all_normal_images_paths(self) -> Failure | list[str]:
         pass
+
+    @abstractmethod
+    def get_all_glaucomatous_images_paths(self) -> Failure | list[str]:
+        pass

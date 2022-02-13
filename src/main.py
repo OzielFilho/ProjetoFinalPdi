@@ -16,6 +16,8 @@ from domain.errors.unable_to_convert_image_to_bgr_color_space_failure import Una
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
 from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
+from domain.errors.unable_to_get_all_glaucomatous_images_paths_failure import \
+    UnableToGetAllGlaucomatousImagesPathsFailure
 from domain.errors.unable_to_get_all_normal_images_paths_failure import UnableToGetAllNormalImagesPathsFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
@@ -30,6 +32,7 @@ from domain.usecases.convert_image_to_bgr_color_space import ConvertImageToBgrCo
 from domain.usecases.convert_image_to_grayscale import ConvertImageToGrayScale
 from domain.usecases.denoise_image_using_non_local_means import DenoiseImageUsingNonLocalMeans
 from domain.usecases.equalize_image import EqualizeImage
+from domain.usecases.get_all_glaucomatous_images_paths import GetAllGlaucomatousImagesPaths
 from domain.usecases.get_all_normal_images_paths import GetAllNormalImagesPaths
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
@@ -47,6 +50,8 @@ def error_checker(result):
     if isinstance(result, Failure):
         if isinstance(result, UnableToGetAllNormalImagesPathsFailure):
             print("Can't get normal images")
+        if isinstance(result, UnableToGetAllGlaucomatousImagesPathsFailure):
+            print("Can't get glaucomatous images")
         if isinstance(result, InvalidImagePathFailure):
             print("The specified image path is invalid")
         if isinstance(result, UnableToLoadImageFailure):
@@ -96,6 +101,14 @@ def get_paths_for_normal_images() -> list[str]:
     return error_checker(result)
 
 
+def get_paths_for_glaucomatous_images() -> list[str]:
+    get_glaucomatous_images_paths = GetAllGlaucomatousImagesPaths(
+        image_repository)
+    result = get_glaucomatous_images_paths()
+
+    return error_checker(result)
+
+
 def get_normal_images() -> list[Image]:
     normal_images: list[Image] = []
     normal_images_paths = get_paths_for_normal_images()
@@ -105,6 +118,17 @@ def get_normal_images() -> list[Image]:
         normal_images.append(image)
 
     return normal_images
+
+
+def get_glaucomatous_images() -> list[Image]:
+    glaucomatous_images: list[Image] = []
+    glaucomatous_images_paths = get_paths_for_glaucomatous_images()
+
+    for image_path in glaucomatous_images_paths:
+        image = load_image_from_path(image_path)
+        glaucomatous_images.append(image)
+
+    return glaucomatous_images
 
 
 def load_image_from_path(image_path: str) -> Image:
@@ -190,6 +214,7 @@ def image_processing(image_path: str) -> None:
 
 def main():
     normal_images = get_normal_images()
+    glaucomatous_images = get_glaucomatous_images()
 
 
 if __name__ == "__main__":

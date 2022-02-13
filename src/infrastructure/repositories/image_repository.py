@@ -6,6 +6,8 @@ from domain.errors.unable_to_convert_image_to_grayscale_failure import UnableToC
 from domain.errors.unable_to_denoise_image_using_non_local_means_failure import \
     UnableToDenoiseImageUsingNonLocalMeansFailure
 from domain.errors.unable_to_equalize_image_failure import UnableToEqualizeImageFailure
+from domain.errors.unable_to_get_all_glaucomatous_images_paths_failure import \
+    UnableToGetAllGlaucomatousImagesPathsFailure
 from domain.errors.unable_to_get_all_normal_images_paths_failure import UnableToGetAllNormalImagesPathsFailure
 from domain.errors.unable_to_load_image_failure import UnableToLoadImageFailure
 from domain.errors.unable_to_normalize_image_failure import UnableToNormalizeImageFailure
@@ -25,6 +27,8 @@ from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
 from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
+from infrastructure.errors.unable_to_get_all_glaucomatous_images_paths_exception import \
+    UnableToGetAllGlaucomatousImagesPathsException
 from infrastructure.errors.unable_to_get_all_normal_images_paths_exception import \
     UnableToGetAllNormalImagesPathsException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
@@ -90,5 +94,13 @@ class ImageRepository(ImageRepositoryAbstraction):
             return self.datasource.get_all_normal_images_paths()
         except UnableToGetAllNormalImagesPathsException:
             return UnableToGetAllNormalImagesPathsFailure()
+        except BaseException as exception:
+            return ImageFailure(message=str(exception))
+
+    def get_all_glaucomatous_images_paths(self) -> Failure | list[str]:
+        try:
+            return self.datasource.get_all_glaucomatous_images_paths()
+        except UnableToGetAllGlaucomatousImagesPathsException:
+            return UnableToGetAllGlaucomatousImagesPathsFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))

@@ -18,6 +18,8 @@ from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import
 from infrastructure.errors.unable_to_denoise_image_using_non_local_means_exception import \
     UnableToDenoiseImageUsingNonLocalMeansException
 from infrastructure.errors.unable_to_equalize_exception import UnableToEqualizeImageException
+from infrastructure.errors.unable_to_get_all_glaucomatous_images_paths_exception import \
+    UnableToGetAllGlaucomatousImagesPathsException
 from infrastructure.errors.unable_to_get_all_normal_images_paths_exception import \
     UnableToGetAllNormalImagesPathsException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
@@ -110,3 +112,24 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return paths
         except:
             raise UnableToGetAllNormalImagesPathsException()
+
+    def get_all_glaucomatous_images_paths(self) -> list[str]:
+        try:
+            current_path = os.getcwd()
+            os.chdir('..')
+            root_path = os.getcwd()
+
+            glaucomatous_images_folder_path = os.path.join(
+                root_path,
+                'assets',
+                'rim_one_db',
+                'glaucoma'
+            )
+
+            paths = self.get_paths_from(glaucomatous_images_folder_path)
+
+            os.chdir(current_path)
+
+            return paths
+        except:
+            raise UnableToGetAllGlaucomatousImagesPathsException()

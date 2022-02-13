@@ -37,3 +37,7 @@ class ImageDataSourceAbstraction(ABC):
     @abstractmethod
     def get_all_normal_images_paths(self) -> list[str]:
         pass
+
+    @abstractmethod
+    def get_all_glaucomatous_images_paths(self) -> list[str]:
+        pass
