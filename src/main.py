@@ -2,6 +2,8 @@ import sys
 
 import cv2
 
+from application.utils.register_all_binds import register_all_binds
+from application.utils.service_locator import get_dependency
 from domain.entities.image import Image
 from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
@@ -36,14 +38,10 @@ from domain.usecases.get_all_glaucomatous_images_paths import GetAllGlaucomatous
 from domain.usecases.get_all_normal_images_paths import GetAllNormalImagesPaths
 from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
-from external.datasources.image_datasource import ImageDataSource
 from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import \
     UnableToConvertImageToGrayscaleException
-from infrastructure.repositories.image_repository import ImageRepository
 
-# Core dependencies
-image_datasource = ImageDataSource()
-image_repository = ImageRepository(image_datasource)
+register_all_binds()
 
 
 def error_checker(result):
@@ -95,15 +93,16 @@ def display_image(window_title: str, image: Image, auto_close: bool = False):
 
 
 def get_paths_for_normal_images() -> list[str]:
-    get_normal_images_paths = GetAllNormalImagesPaths(image_repository)
+    get_normal_images_paths = get_dependency(GetAllNormalImagesPaths)
     result = get_normal_images_paths()
 
     return error_checker(result)
 
 
 def get_paths_for_glaucomatous_images() -> list[str]:
-    get_glaucomatous_images_paths = GetAllGlaucomatousImagesPaths(
-        image_repository)
+    get_glaucomatous_images_paths = get_dependency(
+        GetAllGlaucomatousImagesPaths
+    )
     result = get_glaucomatous_images_paths()
 
     return error_checker(result)
@@ -132,7 +131,7 @@ def get_glaucomatous_images() -> list[Image]:
 
 
 def load_image_from_path(image_path: str) -> Image:
-    load_image = LoadImage(image_repository)
+    load_image = get_dependency(LoadImage)
     parameters = LoadImageParameters(image_path)
     result = load_image(parameters)
 
@@ -140,7 +139,7 @@ def load_image_from_path(image_path: str) -> Image:
 
 
 def image_normalization(image: Image) -> Image:
-    normalize_image = NormalizeImage(image_repository)
+    normalize_image = get_dependency(NormalizeImage)
     parameters = NormalizeImageParameters(image)
     result = normalize_image(parameters)
 
@@ -148,7 +147,9 @@ def image_normalization(image: Image) -> Image:
 
 
 def image_denoising(image: Image) -> Image:
-    denoise_image = DenoiseImageUsingNonLocalMeans(image_repository)
+    denoise_image = get_dependency(
+        DenoiseImageUsingNonLocalMeans
+    )
     parameters = DenoiseImageUsingNonLocalMeansParameters(image)
     result = denoise_image(parameters)
 
@@ -156,7 +157,7 @@ def image_denoising(image: Image) -> Image:
 
 
 def image_equalization(image: Image) -> Image:
-    equalize_image = EqualizeImage(image_repository)
+    equalize_image = get_dependency(EqualizeImage)
     parameters = EqualizeImageParameters(image)
     result = equalize_image(parameters)
 
@@ -164,8 +165,9 @@ def image_equalization(image: Image) -> Image:
 
 
 def image_color_space_conversion(image: Image) -> Image:
-    convert_image_to_bgr_color_space = ConvertImageToBgrColorSpace(
-        image_repository)
+    convert_image_to_bgr_color_space = get_dependency(
+        ConvertImageToBgrColorSpace
+    )
     parameters = ConvertImageToBgrColorSpaceParameters(image)
     result = convert_image_to_bgr_color_space(parameters)
 
@@ -173,7 +175,9 @@ def image_color_space_conversion(image: Image) -> Image:
 
 
 def image_convert_to_grayscale(image: Image) -> Image:
-    convert_image_to_grayscale = ConvertImageToGrayScale(image_repository)
+    convert_image_to_grayscale = get_dependency(
+        ConvertImageToGrayScale
+    )
     parameters = ConvertImageToGrayscaleParameters(image)
     result = convert_image_to_grayscale(parameters)
 
