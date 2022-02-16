@@ -40,6 +40,11 @@ from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from infrastructure.errors.unable_to_convert_image_to_grayscale_exception import \
     UnableToConvertImageToGrayscaleException
+from domain.errors.invalid_write_image_failure import InvalidWriteImageFailure
+from domain.parameters.write_image_parameters import WriteImageParameters
+from domain.usecases.write_image import WriteImage
+from infrastructure.errors.unable_to_write_image_exception import UnableToWriteImageException
+from application.utils.get_name_image_path import get_name_image_path
 
 register_all_binds()
 
@@ -74,6 +79,10 @@ def error_checker(result):
             print("The specified image to convert is invalid")
         if isinstance(result, UnableToConvertImageToGrayscaleException):
             print("Can't convert image to grayscale")
+        if isinstance(result, InvalidWriteImageFailure):
+            print("The specified image to write is invalid")
+        if isinstance(result, UnableToWriteImageException):
+            print("Can't write the image")
         if isinstance(result, ImageFailure) and result.message is not None:
             print(result.message)
 
@@ -113,7 +122,9 @@ def get_normal_images() -> list[Image]:
     normal_images_paths = get_paths_for_normal_images()
 
     for image_path in normal_images_paths:
+        print(image_path)
         image = load_image_from_path(image_path)
+        ##write_image_from_path(f'./assets/result/normal/{str(i)}.jpg',image)
         normal_images.append(image)
 
     return normal_images
@@ -134,6 +145,13 @@ def load_image_from_path(image_path: str) -> Image:
     load_image = get_dependency(LoadImage)
     parameters = LoadImageParameters(image_path)
     result = load_image(parameters)
+
+    return error_checker(result)
+
+def write_image_from_path(image_path: str,image:Image) -> None:
+    write_image = get_dependency(WriteImage)
+    parameters = WriteImageParameters(image_path,image)
+    result = write_image(parameters)
 
     return error_checker(result)
 
@@ -185,40 +203,57 @@ def image_convert_to_grayscale(image: Image) -> Image:
 
 
 def pre_processing(image_path: str) -> Image:
+    name_image = get_name_image_path(image_path)
+
     image = load_image_from_path(image_path)
+    write_image_from_path(f'./assets/result/{name_image}_original.jpg',image)
     # display_image("Original image", image)
 
     normalized_image = image_normalization(image)
+    write_image_from_path(f'./assets/result/{name_image}_normalized.jpg',normalized_image)
     # display_image("Normalized image", normalized_image)
 
     denoised_image = image_denoising(normalized_image)
+    write_image_from_path(f'./assets/result/{name_image}_denoised.jpg',denoised_image)
     # display_image("Denoised image", denoised_image)
 
     equalized_image = image_equalization(denoised_image)
+    write_image_from_path(f'./assets/result/{name_image}_equalized.jpg',equalized_image)
     # display_image("Equalized image", equalized_image)
 
     return equalized_image
 
 
-def color_space_conversion(image: Image) -> Image:
+def color_space_conversion(image_path:str,image: Image) -> Image:
+    name_image = get_name_image_path(image_path)
+
     image_in_bgr_color_space = image_color_space_conversion(image)
+    write_image_from_path(f'./assets/result/{name_image}_bgr.jpg',image_in_bgr_color_space)
     # display_image("Image in BGR color space", image_in_bgr_color_space)
 
     image_in_grayscale = image_convert_to_grayscale(image_in_bgr_color_space)
+    write_image_from_path(f'./assets/result/{name_image}_grayscale.jpg',image_in_grayscale)
     # display_image("Image in Grayscale", image_in_grayscale)
 
+    return image_in_grayscale
 
-def image_processing(image_path: str) -> None:
+
+def image_processing(image_path: str) -> Image:
     processed_image = pre_processing(image_path)
-    color_space_conversion(processed_image)
+    color_space = color_space_conversion(image_path,processed_image)
 
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    return color_space
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
 
 
 def main():
-    normal_images = get_normal_images()
-    glaucomatous_images = get_glaucomatous_images()
+    ##normal_images = get_normal_images()
+    ##glaucomatous_images = get_glaucomatous_images()
+    image_s = image_processing('./assets/rim_one_db/glaucoma/Im256.jpg')
+    
+    
 
 
 if __name__ == "__main__":

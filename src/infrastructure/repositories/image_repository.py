@@ -1,3 +1,4 @@
+from ast import Return
 from domain.entities.image import Image
 from domain.errors.failure import Failure
 from domain.errors.image_failure import ImageFailure
@@ -32,6 +33,9 @@ from infrastructure.errors.unable_to_get_all_glaucomatous_images_paths_exception
 from infrastructure.errors.unable_to_get_all_normal_images_paths_exception import \
     UnableToGetAllNormalImagesPathsException
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
+from domain.parameters.write_image_parameters import WriteImageParameters
+from infrastructure.errors.unable_to_write_image_exception import UnableToWriteImageException
+from domain.errors.unable_to_write_image_failure import UnableToWriteImageFailure
 
 
 class ImageRepository(ImageRepositoryAbstraction):
@@ -104,3 +108,11 @@ class ImageRepository(ImageRepositoryAbstraction):
             return UnableToGetAllGlaucomatousImagesPathsFailure()
         except BaseException as exception:
             return ImageFailure(message=str(exception))
+            
+    def write_image(self, parameters: WriteImageParameters) -> Failure | None:
+        try:
+            return self.datasource.write_image(parameters)
+        except UnableToWriteImageException:
+            return UnableToWriteImageFailure()
+        except BaseException as exception:
+            return ImageFailure(message=str(exception))        

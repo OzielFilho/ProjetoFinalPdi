@@ -7,6 +7,7 @@ from domain.parameters.denoise_image_using_non_local_means_parameters import Den
 from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
+from domain.parameters.write_image_parameters import WriteImageParameters
 
 
 class ImageDataSourceAbstraction(ABC):
@@ -41,3 +42,8 @@ class ImageDataSourceAbstraction(ABC):
     @abstractmethod
     def get_all_glaucomatous_images_paths(self) -> list[str]:
         pass
+
+    @abstractmethod
+    def write_image(self, parameters: WriteImageParameters) -> None:
+        pass
+

@@ -25,6 +25,8 @@ from infrastructure.errors.unable_to_get_all_normal_images_paths_exception impor
 from infrastructure.errors.unable_to_load_image_exception import UnableToLoadImageException
 from infrastructure.errors.unable_to_normalize_image_exception import UnableToNormalizeImageException
 from infrastructure.mappers.image_mapper import ImageMapper
+from domain.parameters.write_image_parameters import WriteImageParameters
+from infrastructure.errors.unable_to_write_image_exception import UnableToWriteImageException
 
 
 class ImageDataSource(ImageDataSourceAbstraction):
@@ -133,3 +135,12 @@ class ImageDataSource(ImageDataSourceAbstraction):
             return paths
         except:
             raise UnableToGetAllGlaucomatousImagesPathsException()
+    
+    def write_image(self, parameters: WriteImageParameters) -> None:
+        data = cv2.imwrite(parameters.image_path,parameters.image.matrix)
+
+        if data is not None:
+            return ImageMapper.from_array(data=data)
+        else:
+            raise UnableToWriteImageException()
+

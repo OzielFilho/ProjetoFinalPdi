@@ -9,6 +9,7 @@ from domain.usecases.load_image import LoadImage
 from domain.usecases.normalize_image import NormalizeImage
 from external.datasources.image_datasource import ImageDataSource
 from infrastructure.repositories.image_repository import ImageRepository
+from domain.usecases.write_image import WriteImage
 
 
 def register_all_binds():
@@ -22,3 +23,4 @@ def register_all_binds():
     register_bind(ConvertImageToBgrColorSpace)
     register_bind(ConvertImageToGrayScale)
     register_bind(GetAllGlaucomatousImagesPaths)
+    register_bind(WriteImage)

@@ -10,6 +10,7 @@ from domain.parameters.equalize_image_parameters import EqualizeImageParameters
 from domain.parameters.load_image_parameters import LoadImageParameters
 from domain.parameters.normalize_image_parameters import NormalizeImageParameters
 from infrastructure.datasources.image_datasource_abstraction import ImageDataSourceAbstraction
+from domain.parameters.write_image_parameters import WriteImageParameters
 
 
 class ImageRepositoryAbstraction(ABC):
@@ -50,4 +51,8 @@ class ImageRepositoryAbstraction(ABC):
 
     @abstractmethod
     def get_all_glaucomatous_images_paths(self) -> Failure | list[str]:
+        pass
+
+    @abstractmethod
+    def write_image(self, parameters: WriteImageParameters,) -> Failure | None:
         pass
