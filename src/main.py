@@ -1,6 +1,7 @@
 import sys
 
 import cv2
+import numpy as np
 
 from application.utils.register_all_binds import register_all_binds
 from application.utils.service_locator import get_dependency
@@ -122,7 +123,6 @@ def get_normal_images() -> list[Image]:
     normal_images_paths = get_paths_for_normal_images()
 
     for image_path in normal_images_paths:
-        print(image_path)
         image = load_image_from_path(image_path)
         ##write_image_from_path(f'./assets/result/normal/{str(i)}.jpg',image)
         normal_images.append(image)
@@ -217,11 +217,11 @@ def pre_processing(image_path: str) -> Image:
     write_image_from_path(f'./assets/result/{name_image}_denoised.jpg',denoised_image)
     # display_image("Denoised image", denoised_image)
 
-    equalized_image = image_equalization(denoised_image)
-    write_image_from_path(f'./assets/result/{name_image}_equalized.jpg',equalized_image)
+    # equalized_image = image_equalization(denoised_image)
+    # write_image_from_path(f'./assets/result/{name_image}_equalized.jpg',equalized_image)
     # display_image("Equalized image", equalized_image)
 
-    return equalized_image
+    return denoised_image
 
 
 def color_space_conversion(image_path:str,image: Image) -> Image:
@@ -232,26 +232,62 @@ def color_space_conversion(image_path:str,image: Image) -> Image:
     # display_image("Image in BGR color space", image_in_bgr_color_space)
 
     image_in_grayscale = image_convert_to_grayscale(image_in_bgr_color_space)
+   
     write_image_from_path(f'./assets/result/{name_image}_grayscale.jpg',image_in_grayscale)
     # display_image("Image in Grayscale", image_in_grayscale)
 
     return image_in_grayscale
 
+def quantizacao_simples(img, K):
+    a = np.float32(img)
+    bucket = 256 / K
+    quantizado = (a / bucket)
+
+    return np.uint8(quantizado) * bucket
 
 def image_processing(image_path: str) -> Image:
+    name_image = get_name_image_path(image_path)
+
     processed_image = pre_processing(image_path)
     color_space = color_space_conversion(image_path,processed_image)
 
+    quantizacao = quantizacao_simples(color_space.matrix,35)
+   
+    # Separa os pixels em uma lista
+    pixels = []
+    for x in range(quantizacao.shape[1]):
+        for y in range(quantizacao.shape[0]):
+            pixels.append(quantizacao[y][x])
+    
+    ## Adiciona as especies em um dicionario com suas quantidades
+    especies = {}
+    for value in pixels:  
+        if len(especies) == 0:
+            especies[str(int(value))] = 1
+        else:
+            if str(int(value)) in especies:               
+                especies[str(int(value))] = especies[str(int(value))] + 1
+                continue
+            else:
+                especies[str(int(value))] = 1
+          
+    ## Respectivas quantidades
+    print(f'Espécies: {len(especies)}')
+    for i in especies.items():
+        print(f'{i[1]} da indivíduo {i[0]} ')
+           
+    write_image_from_path(f'./assets/result/{name_image}_q.jpg',Image(matrix=quantizacao))
+   
+
     return color_space
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+  
 
 
 
 def main():
     ##normal_images = get_normal_images()
     ##glaucomatous_images = get_glaucomatous_images()
-    image_s = image_processing('./assets/rim_one_db/glaucoma/Im256.jpg')
+    image_s = image_processing('./assets/rim_one_db/glaucoma/Im354.jpg')
     
     
 
